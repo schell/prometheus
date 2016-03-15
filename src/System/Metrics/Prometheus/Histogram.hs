@@ -3,10 +3,9 @@
 module System.Metrics.Prometheus.Histogram where
 
 
-import           Data.Foldable (foldl')
-import           Data.IORef    (IORef, atomicModifyIORef', newIORef, readIORef)
-import           Data.Map      (Map)
-import qualified Data.Map      as Map
+import           Data.IORef (IORef, atomicModifyIORef', newIORef, readIORef)
+import           Data.Map   (Map)
+import qualified Data.Map   as Map
 
 
 newtype Histogram = Histogram { unHistogram :: IORef HistogramSample }
@@ -34,18 +33,17 @@ put :: Double -> Histogram -> IO ()
 put x ioref = atomicModifyIORef' (unHistogram ioref) update
     where update histData = (hist' histData, ())
           hist' histData =
-              histData { histBuckets = Map.adjust (+ 1) (getBucket x (Map.keys $ histBuckets histData)) (histBuckets histData)
+              histData { histBuckets = updateBuckets x $ histBuckets histData
                        , histSum = histSum histData + x
                        , histCount = histCount histData + 1
                        }
 
 
-getBucket :: Double -> [UpperBound] -> Double
-getBucket x buckets = foldl' f (head buckets) buckets
-  where
-    f prev curr
-        | x <= curr && x > prev = curr
-        | otherwise = prev
+updateBuckets :: Double -> Buckets -> Buckets
+updateBuckets x = Map.mapWithKey updateBucket
+  where updateBucket key val
+            | x <= key  = val + 1
+            | otherwise = val
 
 
 sample :: Histogram -> IO HistogramSample

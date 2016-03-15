@@ -5,22 +5,23 @@ module System.Metrics.Prometheus.Encode
        , serializeMetrics
        ) where
 
-import           Data.ByteString.Builder            (Builder, byteString, char8,
-                                                     doubleDec, intDec,
-                                                     toLazyByteString)
-import           Data.ByteString.Lazy               (ByteString)
-import           Data.List                          (intersperse)
-import qualified Data.Map                           as Map
-import           Data.Monoid                        ((<>))
-import           Data.Text                          (Text, replace)
-import           Data.Text.Encoding                 (encodeUtf8)
+import           Data.ByteString.Builder             (Builder, byteString,
+                                                      char8, doubleDec, intDec,
+                                                      toLazyByteString)
+import           Data.ByteString.Lazy                (ByteString)
+import           Data.List                           (intersperse)
+import qualified Data.Map                            as Map
+import           Data.Monoid                         ((<>))
+import           Data.Text                           (Text, replace)
+import           Data.Text.Encoding                  (encodeUtf8)
 
-import           System.Metrics.Prometheus.MetricId (MetricId (..))
-import           System.Metrics.Prometheus.Sample   (CounterSample (..),
-                                                     GaugeSample (..),
-                                                     MetricSample (..),
-                                                     RegistrySample (..),
-                                                     metricSample)
+import           System.Metrics.Prometheus.Counter   (CounterSample (..))
+import           System.Metrics.Prometheus.Gauge     (GaugeSample (..))
+import           System.Metrics.Prometheus.Histogram (HistogramSample (..))
+import           System.Metrics.Prometheus.MetricId  (MetricId (..))
+import           System.Metrics.Prometheus.Sample    (MetricSample (..),
+                                                      RegistrySample (..),
+                                                      metricSample)
 
 
 serializeMetrics :: RegistrySample -> ByteString
@@ -42,10 +43,6 @@ encodeHeader :: MetricId -> MetricSample -> Builder
 encodeHeader mid sample
     =  "# HELP " <> encodeName mid <> space <> "help" <> newline
     <> "# TYPE " <> encodeName mid <> space <> encodeSampleType sample
-
-
--- escape :: Text -> Text
--- escape = replace "\\" "\\\" . replace "\"" ("\\" <> "\"")
 
 
 encodeHistogram = undefined

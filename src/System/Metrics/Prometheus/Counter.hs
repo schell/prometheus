@@ -6,6 +6,7 @@ import           Data.Atomics.Counter (AtomicCounter, incrCounter_, newCounter,
 
 
 newtype Counter = Counter { unCounter :: AtomicCounter }
+newtype CounterSample = CounterSample { unCounterSample :: Int }
 
 
 new :: IO Counter
@@ -20,5 +21,5 @@ inc :: Counter -> IO ()
 inc = add 1
 
 
-view :: Counter -> IO Int
-view = readCounter . unCounter
+sample :: Counter -> IO CounterSample
+sample = fmap CounterSample . readCounter . unCounter

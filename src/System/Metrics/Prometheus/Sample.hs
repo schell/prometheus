@@ -1,27 +1,18 @@
 module System.Metrics.Prometheus.Sample where
 
 
-import           Data.Map                           (Map)
+import           Data.Map                            (Map)
 
-import qualified System.Metrics.Prometheus.Counter  as Counter
-import qualified System.Metrics.Prometheus.Gauge    as Gauge
-import           System.Metrics.Prometheus.Metric   (Metric)
-import qualified System.Metrics.Prometheus.Metric   as Metric
-import           System.Metrics.Prometheus.MetricId (MetricId)
-import           System.Metrics.Prometheus.Registry (Registry, unRegistry)
-
-
-newtype CounterSample = CounterSample { unCounterSample :: Int }
-
-newtype GaugeSample = GaugeSample { unGaugeSample :: Double }
-
-
-data HistogramSample =
-    HistogramSample
-    { histBuckets :: Map Double Int
-    , histSum     :: Int
-    , histCount   :: Int
-    }
+import           System.Metrics.Prometheus.Counter   (CounterSample (..))
+import qualified System.Metrics.Prometheus.Counter   as Counter
+import           System.Metrics.Prometheus.Gauge     (GaugeSample (..))
+import qualified System.Metrics.Prometheus.Gauge     as Gauge
+import           System.Metrics.Prometheus.Histogram (HistogramSample (..))
+import qualified System.Metrics.Prometheus.Histogram as Histogram
+import           System.Metrics.Prometheus.Metric    (Metric)
+import qualified System.Metrics.Prometheus.Metric    as Metric
+import           System.Metrics.Prometheus.MetricId  (MetricId)
+import           System.Metrics.Prometheus.Registry  (Registry, unRegistry)
 
 
 data SummarySample =
@@ -56,5 +47,6 @@ sample = fmap RegistrySample . mapM sampleMetric . unRegistry
 
 
 sampleMetric :: Metric -> IO MetricSample
-sampleMetric (Metric.Counter count) = Counter . CounterSample <$> Counter.view count
-sampleMetric (Metric.Gauge gauge) = Gauge . GaugeSample <$> Gauge.get gauge
+sampleMetric (Metric.Counter count) = Counter <$> Counter.sample count
+sampleMetric (Metric.Gauge gauge) = Gauge <$> Gauge.sample gauge
+sampleMetric (Metric.Histogram histogram) = Histogram <$> Histogram.sample histogram

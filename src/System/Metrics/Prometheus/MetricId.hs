@@ -8,4 +8,4 @@ data MetricId =
     MetricId
     { name   :: Text
     , labels :: Map Text Text
-    } deriving (Eq, Ord)
+    } deriving (Eq, Ord, Show)

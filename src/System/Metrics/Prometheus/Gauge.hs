@@ -5,10 +5,12 @@ import           Data.IORef (IORef, atomicModifyIORef', atomicWriteIORef,
 
 
 newtype Gauge = Gauge { unGauge :: IORef Double }
+newtype GaugeSample = GaugeSample { unGaugeSample :: Double }
 
 
 new :: IO Gauge
 new = Gauge <$> newIORef 0
+
 
 add :: Double -> Gauge -> IO ()
 add x = flip atomicModifyIORef' f . unGauge
@@ -18,6 +20,7 @@ add x = flip atomicModifyIORef' f . unGauge
 sub :: Double -> Gauge -> IO ()
 sub x = flip atomicModifyIORef' f . unGauge
   where f v = (v - x, ())
+
 
 inc :: Gauge -> IO ()
 inc = add 1
@@ -31,5 +34,5 @@ set :: Double -> Gauge -> IO ()
 set x = flip atomicWriteIORef x . unGauge
 
 
-get :: Gauge -> IO Double
-get = readIORef . unGauge
+sample :: Gauge -> IO GaugeSample
+sample = fmap GaugeSample . readIORef . unGauge

@@ -27,6 +27,10 @@ newtype KeyError = KeyError MetricId deriving (Show, Typeable)
 instance Exception KeyError
 
 
+new :: Registry
+new = Registry Map.empty
+
+
 registerCounter :: Name -> Labels -> Registry -> IO (Counter, Registry)
 registerCounter name labels registry = do
     counter <- Counter.new

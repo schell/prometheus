@@ -3,25 +3,25 @@
 
 module System.Metrics.Prometheus.Registry where
 
-import           Control.Exception                   (Exception, throw)
-import           Data.Map                            (Map)
-import qualified Data.Map                            as Map
-import           Data.Typeable                       (Typeable)
+import           Control.Exception                          (Exception, throw)
+import           Data.Map                                   (Map)
+import qualified Data.Map                                   as Map
+import           Data.Typeable                              (Typeable)
 
-import           System.Metrics.Prometheus.Counter   (Counter)
-import qualified System.Metrics.Prometheus.Counter   as Counter
-import           System.Metrics.Prometheus.Gauge     (Gauge)
-import qualified System.Metrics.Prometheus.Gauge     as Gauge
-import           System.Metrics.Prometheus.Histogram (Histogram)
-import qualified System.Metrics.Prometheus.Histogram as Histogram
-import           System.Metrics.Prometheus.Metric    (Metric)
-import qualified System.Metrics.Prometheus.Metric    as Metric
-import           System.Metrics.Prometheus.MetricId  (Labels,
-                                                      MetricId (MetricId), Name)
-
+import           System.Metrics.Prometheus.Metric           (Metric (..),
+                                                             MetricSample (..))
+import           System.Metrics.Prometheus.Metric.Counter   (Counter)
+import qualified System.Metrics.Prometheus.Metric.Counter   as Counter
+import           System.Metrics.Prometheus.Metric.Gauge     (Gauge)
+import qualified System.Metrics.Prometheus.Metric.Gauge     as Gauge
+import           System.Metrics.Prometheus.Metric.Histogram (Histogram)
+import qualified System.Metrics.Prometheus.Metric.Histogram as Histogram
+import           System.Metrics.Prometheus.MetricId         (Labels,
+                                                             MetricId (MetricId),
+                                                             Name)
 
 newtype Registry = Registry { unRegistry :: Map MetricId Metric }
-
+newtype RegistrySample = RegistrySample { unRegistrySample :: Map MetricId MetricSample }
 
 newtype KeyError = KeyError MetricId deriving (Show, Typeable)
 instance Exception KeyError
@@ -30,7 +30,7 @@ instance Exception KeyError
 registerCounter :: Name -> Labels -> Registry -> IO (Counter, Registry)
 registerCounter name labels registry = do
     counter <- Counter.new
-    return (counter, Registry $ Map.insertWithKey collision mid (Metric.Counter counter) (unRegistry registry))
+    return (counter, Registry $ Map.insertWithKey collision mid (CounterMetric counter) (unRegistry registry))
   where
       mid = MetricId name labels
       collision k _ _ = throw (KeyError k)
@@ -39,7 +39,7 @@ registerCounter name labels registry = do
 registerGauge :: Name -> Labels -> Registry -> IO (Gauge, Registry)
 registerGauge name labels registry = do
     gauge <- Gauge.new
-    return (gauge, Registry $ Map.insertWithKey collision mid (Metric.Gauge gauge) (unRegistry registry))
+    return (gauge, Registry $ Map.insertWithKey collision mid (GaugeMetric gauge) (unRegistry registry))
   where
       mid = MetricId name labels
       collision k _ _ = throw (KeyError k)
@@ -48,7 +48,16 @@ registerGauge name labels registry = do
 registerHistogram :: Name -> Labels -> [Histogram.UpperBound] -> Registry -> IO (Histogram, Registry)
 registerHistogram name labels buckets registry = do
     histogram <- Histogram.new buckets
-    return (histogram, Registry $ Map.insertWithKey collision mid (Metric.Histogram histogram) (unRegistry registry))
+    return (histogram, Registry $ Map.insertWithKey collision mid (HistogramMetric histogram) (unRegistry registry))
   where
       mid = MetricId name labels
       collision k _ _ = throw (KeyError k)
+
+
+sample :: Registry -> IO RegistrySample
+sample = fmap RegistrySample . mapM sampleMetric . unRegistry
+  where
+    sampleMetric :: Metric -> IO MetricSample
+    sampleMetric (CounterMetric count) = CounterMetricSample <$> Counter.sample count
+    sampleMetric (GaugeMetric gauge) = GaugeMetricSample <$> Gauge.sample gauge
+    sampleMetric (HistogramMetric histogram) = HistogramMetricSample <$> Histogram.sample histogram

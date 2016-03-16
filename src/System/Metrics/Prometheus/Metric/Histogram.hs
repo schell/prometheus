@@ -1,6 +1,6 @@
 {-# LANGUAGE TupleSections #-}
 
-module System.Metrics.Prometheus.Histogram where
+module System.Metrics.Prometheus.Metric.Histogram where
 
 
 import           Data.IORef (IORef, atomicModifyIORef', newIORef, readIORef)

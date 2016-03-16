@@ -1,5 +1,5 @@
 name:                prometheus
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            Prometheus Haskell Client
 description:         Idiomatic Haskell client for Prometheus.io monitoring.
 homepage:            http://github.com/LukeHoersten/prometheus#readme

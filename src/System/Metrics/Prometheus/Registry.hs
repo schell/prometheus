@@ -16,7 +16,8 @@ import           System.Metrics.Prometheus.Histogram (Histogram)
 import qualified System.Metrics.Prometheus.Histogram as Histogram
 import           System.Metrics.Prometheus.Metric    (Metric)
 import qualified System.Metrics.Prometheus.Metric    as Metric
-import           System.Metrics.Prometheus.MetricId  (MetricId)
+import           System.Metrics.Prometheus.MetricId  (Labels,
+                                                      MetricId (MetricId), Name)
 
 
 newtype Registry = Registry { unRegistry :: Map MetricId Metric }
@@ -26,22 +27,28 @@ newtype KeyError = KeyError MetricId deriving (Show, Typeable)
 instance Exception KeyError
 
 
-registerCounter :: MetricId -> Registry -> IO (Counter, Registry)
-registerCounter mid registry = do
+registerCounter :: Name -> Labels -> Registry -> IO (Counter, Registry)
+registerCounter name labels registry = do
     counter <- Counter.new
     return (counter, Registry $ Map.insertWithKey collision mid (Metric.Counter counter) (unRegistry registry))
-  where collision k _ _ = throw (KeyError k)
+  where
+      mid = MetricId name labels
+      collision k _ _ = throw (KeyError k)
 
 
-registerGauge :: MetricId -> Registry -> IO (Gauge, Registry)
-registerGauge mid registry = do
+registerGauge :: Name -> Labels -> Registry -> IO (Gauge, Registry)
+registerGauge name labels registry = do
     gauge <- Gauge.new
     return (gauge, Registry $ Map.insertWithKey collision mid (Metric.Gauge gauge) (unRegistry registry))
-  where collision k _ _ = throw (KeyError k)
+  where
+      mid = MetricId name labels
+      collision k _ _ = throw (KeyError k)
 
 
-registerHistogram :: MetricId -> [Histogram.UpperBound] -> Registry -> IO (Histogram, Registry)
-registerHistogram mid buckets registry = do
+registerHistogram :: Name -> Labels -> [Histogram.UpperBound] -> Registry -> IO (Histogram, Registry)
+registerHistogram name labels buckets registry = do
     histogram <- Histogram.new buckets
     return (histogram, Registry $ Map.insertWithKey collision mid (Metric.Histogram histogram) (unRegistry registry))
-  where collision k _ _ = throw (KeyError k)
+  where
+      mid = MetricId name labels
+      collision k _ _ = throw (KeyError k)

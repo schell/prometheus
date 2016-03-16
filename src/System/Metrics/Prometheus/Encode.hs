@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RankNTypes        #-}
 
 module System.Metrics.Prometheus.Encode
        ( encodeMetrics
@@ -12,13 +13,21 @@ import           Data.ByteString.Lazy                (ByteString)
 import           Data.List                           (intersperse)
 import qualified Data.Map                            as Map
 import           Data.Monoid                         ((<>))
-import           Data.Text                           (Text, replace)
+import           Data.Text                           (Text)
 import           Data.Text.Encoding                  (encodeUtf8)
+import           Data.Text.Lazy                      (toStrict)
+import           Data.Text.Lazy.Builder              (toLazyText)
+import           Data.Text.Lazy.Builder.RealFloat    (FPFormat (Generic),
+                                                      formatRealFloat)
 
 import           System.Metrics.Prometheus.Counter   (CounterSample (..))
 import           System.Metrics.Prometheus.Gauge     (GaugeSample (..))
-import           System.Metrics.Prometheus.Histogram (HistogramSample (..))
-import           System.Metrics.Prometheus.MetricId  (MetricId (..))
+import           System.Metrics.Prometheus.Histogram (Count,
+                                                      HistogramSample (..),
+                                                      UpperBound)
+import           System.Metrics.Prometheus.MetricId  (Labels (..),
+                                                      MetricId (..), Name (..),
+                                                      addLabel)
 import           System.Metrics.Prometheus.Sample    (MetricSample (..),
                                                       RegistrySample (..),
                                                       metricSample)
@@ -36,17 +45,15 @@ encodeMetrics = mconcat . intersperse "\n\n" .
 encodeMetric :: MetricId -> MetricSample -> Builder
 encodeMetric mid sample
     =  encodeHeader mid sample <> newline
-    <> metricSample (encodeCounter mid) (encodeGauge mid) encodeHistogram encodeSummary sample
-
+    <> metricSample (encodeCounter mid) (encodeGauge mid) (encodeHistogram mid) (encodeSummary mid) sample
+  where
+    encodeSummary = undefined
 
 encodeHeader :: MetricId -> MetricSample -> Builder
 encodeHeader mid sample
-    =  "# HELP " <> encodeName mid <> space <> "help" <> newline
-    <> "# TYPE " <> encodeName mid <> space <> encodeSampleType sample
-
-
-encodeHistogram = undefined
-encodeSummary = undefined
+    =  "# HELP " <> nm <> space <> "help" <> newline
+    <> "# TYPE " <> nm <> space <> encodeSampleType sample
+  where nm = encodeName (name mid)
 
 
 encodeCounter :: MetricId -> CounterSample -> Builder
@@ -57,25 +64,47 @@ encodeGauge :: MetricId -> GaugeSample -> Builder
 encodeGauge mid gauge = encodeMetricId mid <> space <> doubleDec (unGaugeSample gauge)
 
 
+encodeHistogram :: MetricId -> HistogramSample -> Builder
+encodeHistogram mid histogram
+    =  encodeHistogramBuckets mid histogram
+    <> encodeName (name mid) <> "_sum" <> space <> doubleDec (histSum histogram)
+    <> encodeName (name mid) <> "_count" <> space <> intDec (histCount histogram)
+
+
+encodeHistogramBuckets :: MetricId -> HistogramSample -> Builder
+encodeHistogramBuckets mid = mconcat . map snd . Map.toList
+    . Map.mapWithKey (encodeHistogramBucket mid) . histBuckets
+
+
+encodeHistogramBucket :: MetricId -> UpperBound -> Count -> Builder
+encodeHistogramBucket mid upperBound count
+    =  encodeName (name mid) <> "_bucket" <> encodeLabels labels' <> space <> intDec count
+  where
+    upperBoundValue = toStrict . toLazyText $ formatRealFloat Generic Nothing upperBound
+    labels' = addLabel "le" upperBoundValue $ labels mid
+
+
 encodeSampleType :: MetricSample -> Builder
 encodeSampleType = byteString . metricSample (const "counter")
     (const "gauge") (const "histogram") (const "summary")
 
 
 encodeMetricId :: MetricId -> Builder
-encodeMetricId mid = encodeName mid <> encodeLabels mid
+encodeMetricId mid = encodeName (name mid) <> encodeLabels (labels mid)
 
 
-encodeName :: MetricId -> Builder
-encodeName = text . name
+encodeName :: Name -> Builder
+encodeName = text . unName
 
 
-encodeLabels :: MetricId -> Builder
-encodeLabels mid | Map.null (labels mid) = space
-                 | otherwise =
-                   openBracket
-                   <> (mconcat . intersperse comma . map encodeLabel . Map.toList $ labels mid)
-                   <> closeBracket
+encodeLabels :: Labels -> Builder
+encodeLabels ls
+    | Map.null ls' = space
+    | otherwise =
+             openBracket
+          <> (mconcat . intersperse comma . map encodeLabel $ Map.toList ls')
+          <> closeBracket
+  where ls' = unLabels ls
 
 
 encodeLabel :: (Text, Text) -> Builder

@@ -17,8 +17,8 @@ import           System.Metrics.Prometheus.MetricId (Labels (..), MetricId (..),
 
 encodeHeader :: MetricId -> MetricSample -> Builder
 encodeHeader mid sample
-    =  "# HELP " <> nm <> space <> "help" <> newline
-    <> "# TYPE " <> nm <> space <> encodeSampleType sample
+    = "# TYPE " <> nm <> space <> encodeSampleType sample
+    -- <> "# HELP " <> nm <> space <> "help" <> newline <>
   where nm = encodeName (name mid)
 
 
@@ -46,7 +46,7 @@ encodeLabels ls
 
 
 encodeLabel :: (Text, Text) -> Builder
-encodeLabel (key, value) = text key <> equals <> text value
+encodeLabel (key, value) = text key <> equals <> quote <> text value <> quote
 
 
 text :: Text -> Builder
@@ -75,3 +75,7 @@ comma = char8 ','
 
 equals :: Builder
 equals = char8 '='
+
+
+quote :: Builder
+quote = char8 '"'

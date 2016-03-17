@@ -3,6 +3,7 @@
 module System.Metrics.Prometheus.Metric.Histogram
        ( Histogram
        , HistogramSample (..)
+       , Buckets
        , UpperBound
        , new
        , put

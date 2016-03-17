@@ -16,7 +16,6 @@ module System.Metrics.Prometheus.Encode.MetricId
 import           Data.ByteString.Builder            (Builder, byteString, char8,
                                                      intDec)
 import           Data.List                          (intersperse)
-import qualified Data.Map                           as Map
 import           Data.Monoid                        ((<>))
 import           Data.Text                          (Text, replace)
 import           Data.Text.Encoding                 (encodeUtf8)
@@ -24,11 +23,12 @@ import           Data.Text.Lazy                     (toStrict)
 import           Data.Text.Lazy.Builder             (toLazyText)
 import           Data.Text.Lazy.Builder.RealFloat   (FPFormat (Generic),
                                                      formatRealFloat)
+import           Prelude                            hiding (null)
 
 import           System.Metrics.Prometheus.Metric   (MetricSample (..),
                                                      metricSample)
 import           System.Metrics.Prometheus.MetricId (Labels (..), MetricId (..),
-                                                     Name (..))
+                                                     Name (..), null, toList)
 
 
 encodeHeader :: MetricId -> MetricSample -> Builder
@@ -53,12 +53,11 @@ encodeName = text . unName
 
 encodeLabels :: Labels -> Builder
 encodeLabels ls
-    | Map.null ls' = space
+    | null ls = space
     | otherwise =
              openBracket
-          <> (mconcat . intersperse comma . map encodeLabel $ Map.toList ls')
+          <> (mconcat . intersperse comma . map encodeLabel $ toList ls)
           <> closeBracket
-  where ls' = unLabels ls
 
 
 encodeLabel :: (Text, Text) -> Builder

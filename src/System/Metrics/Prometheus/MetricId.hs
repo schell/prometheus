@@ -6,6 +6,7 @@ import           Data.Map    (Map)
 import qualified Data.Map    as Map
 import           Data.String (IsString)
 import           Data.Text   (Text)
+import           Prelude     hiding (null)
 
 
 newtype Name = Name { unName :: Text } deriving (Show, Eq, Ord, IsString, Monoid)
@@ -25,3 +26,11 @@ addLabel key val = Labels . Map.insert key val . unLabels
 
 fromList :: [(Text, Text)] -> Labels
 fromList = Labels . Map.fromList
+
+
+toList :: Labels -> [(Text, Text)]
+toList = Map.toList . unLabels
+
+
+null :: Labels -> Bool
+null = Map.null . unLabels

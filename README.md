@@ -3,13 +3,15 @@
 A simple and modern, type safe, haskell
 [Prometheus](http://prometheus.io) client. Specifically there is no
 use of unsafe IO or manual ByteString construction from lists of
-bytes.
+bytes. Batteries-included web server.
 
 - [Hackage Package](https://hackage.haskell.org/package/prometheus)
 
 ## Tasks
 
-- Help docstrings are not yet implemented.
-- Timestamps on samples are not yet implemented.
-- Web server layer not yet implemented.
-- GHC-specific metrics not yet implemented.
+- [ ] Implement help docstrings.
+- [ ] Implement timestamps on samples.
+- [ ] Implement GHC-specific metrics.
+- [ ] Encode name and labels on register.
+- [ ] Implement ReaderT for GlobalRegistry.
+- [ ] Library documentation and example.

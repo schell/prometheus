@@ -33,8 +33,7 @@ prometheusApp globalRegistry request respond
 
 
 prometheusResponse :: (Response -> IO b) -> GlobalRegistry -> IO b
-prometheusResponse respond globalRegistry = do
-    s <- sample globalRegistry
-    respond . responseBuilder status200 headers $ encodeMetrics s
+prometheusResponse respond gr =
+    respond . responseBuilder status200 headers . encodeMetrics =<< sample gr
   where
       headers = [(hContentType, "text/plain; version=0.0.4")]

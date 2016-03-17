@@ -67,7 +67,7 @@ encodeLabel (key, val) = text key <> equals <> quote <> text (escape val) <> quo
 textValue :: RealFloat f => f -> Text
 textValue x | isInfinite x && x > 0 = "+Inf"
             | isInfinite x && x < 0 = "-Inf"
-            | isNaN x = "Nan"
+            | isNaN x = "NaN"
             | otherwise = toStrict . toLazyText $ formatRealFloat Generic Nothing x
 
 

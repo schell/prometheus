@@ -10,8 +10,8 @@ bytes. Batteries-included web server.
 ## Tasks
 
 - [ ] Implement help docstrings.
-- [ ] Implement timestamps on samples.
 - [ ] Implement GHC-specific metrics.
+- [ ] Implement [summary metric](https://github.com/prometheus/client_golang/blob/master/prometheus/summary.go).
 - [ ] Encode name and labels on register.
 - [ ] Implement ReaderT for GlobalRegistry.
 - [ ] Library documentation and example.

@@ -5,16 +5,19 @@ module System.Metrics.Prometheus.Encode
        , serializeMetrics
        ) where
 
-import           Data.ByteString.Builder                    (Builder, doubleDec,
-                                                             intDec,
+import           Data.ByteString.Builder                    (Builder,
                                                              toLazyByteString)
 import           Data.ByteString.Lazy                       (ByteString)
-import           Data.List                                  (intersperse)
+import           Data.Function                              (on)
+import           Data.List                                  (groupBy,
+                                                             intersperse)
 import qualified Data.Map                                   as Map
 import           Data.Monoid                                ((<>))
 
 import           System.Metrics.Prometheus.Encode.Histogram (encodeHistogram)
-import           System.Metrics.Prometheus.Encode.MetricId  (encodeHeader,
+import           System.Metrics.Prometheus.Encode.MetricId  (encodeDouble,
+                                                             encodeHeader,
+                                                             encodeInt,
                                                              encodeMetricId,
                                                              newline, space)
 import           System.Metrics.Prometheus.Metric           (MetricSample (..),
@@ -30,21 +33,28 @@ serializeMetrics = toLazyByteString . encodeMetrics
 
 
 encodeMetrics :: RegistrySample -> Builder
-encodeMetrics = mconcat . intersperse "\n\n" .
-    map (uncurry encodeMetric) . Map.toList . unRegistrySample
+encodeMetrics = mconcat . intersperse "\n\n" . map encodeMetricGroup . groupByName
+    . Map.toList . unRegistrySample
+  where groupByName = groupBy ((==) `on` (name . fst))
 
 
-encodeMetric :: MetricId -> MetricSample -> Builder
-encodeMetric mid sample
-    =  encodeHeader mid sample <> newline
-    <> metricSample (encodeCounter mid) (encodeGauge mid) (encodeHistogram mid) (encodeSummary mid) sample
+encodeMetricGroup :: [(MetricId, MetricSample)] -> Builder
+encodeMetricGroup group = encodeHeader mid sample <> newline
+    <> mconcat (intersperse newline $ map encodeMetric group)
+  where
+    (mid, sample) = head group
+
+
+encodeMetric :: (MetricId, MetricSample) -> Builder
+encodeMetric (mid, sample) = metricSample (encodeCounter mid) (encodeGauge mid)
+    (encodeHistogram mid) (encodeSummary mid) sample
   where
     encodeSummary = undefined
 
 
 encodeCounter :: MetricId -> CounterSample -> Builder
-encodeCounter mid counter = encodeMetricId mid <> space <> intDec (unCounterSample counter)
+encodeCounter mid counter = encodeMetricId mid <> space <> encodeInt (unCounterSample counter)
 
 
 encodeGauge :: MetricId -> GaugeSample -> Builder
-encodeGauge mid gauge = encodeMetricId mid <> space <> doubleDec (unGaugeSample gauge)
+encodeGauge mid gauge = encodeMetricId mid <> space <> encodeDouble (unGaugeSample gauge)

@@ -5,16 +5,25 @@ module System.Metrics.Prometheus.Encode.MetricId
        , encodeMetricId
        , encodeLabels
        , encodeName
+       , textValue
+       , encodeDouble
+       , encodeInt
+       , escape
        , newline
        , space
        ) where
 
-import           Data.ByteString.Builder            (Builder, byteString, char8)
+import           Data.ByteString.Builder            (Builder, byteString, char8,
+                                                     intDec)
 import           Data.List                          (intersperse)
 import qualified Data.Map                           as Map
 import           Data.Monoid                        ((<>))
-import           Data.Text                          (Text)
+import           Data.Text                          (Text, replace)
 import           Data.Text.Encoding                 (encodeUtf8)
+import           Data.Text.Lazy                     (toStrict)
+import           Data.Text.Lazy.Builder             (toLazyText)
+import           Data.Text.Lazy.Builder.RealFloat   (FPFormat (Generic),
+                                                     formatRealFloat)
 
 import           System.Metrics.Prometheus.Metric   (MetricSample (..),
                                                      metricSample)
@@ -25,7 +34,7 @@ import           System.Metrics.Prometheus.MetricId (Labels (..), MetricId (..),
 encodeHeader :: MetricId -> MetricSample -> Builder
 encodeHeader mid sample
     = "# TYPE " <> nm <> space <> encodeSampleType sample
-    -- <> "# HELP " <> nm <> space <> "help" <> newline <>
+    -- <> "# HELP " <> nm <> space <> escape "help" <> newline <>
   where nm = encodeName (name mid)
 
 
@@ -53,11 +62,30 @@ encodeLabels ls
 
 
 encodeLabel :: (Text, Text) -> Builder
-encodeLabel (key, value) = text key <> equals <> quote <> text value <> quote
+encodeLabel (key, val) = text key <> equals <> quote <> text (escape val) <> quote
+
+
+textValue :: RealFloat f => f -> Text
+textValue x | isInfinite x && x > 0 = "+Inf"
+            | isInfinite x && x < 0 = "-Inf"
+            | isNaN x = "Nan"
+            | otherwise = toStrict . toLazyText $ formatRealFloat Generic Nothing x
+
+
+encodeDouble :: RealFloat f => f -> Builder
+encodeDouble = text . textValue
+
+
+encodeInt :: Int -> Builder
+encodeInt = intDec
 
 
 text :: Text -> Builder
 text = byteString . encodeUtf8
+
+
+escape :: Text -> Text
+escape = replace "\n" "\\n" . replace "\"" "\\\"" . replace "\\" "\\\\"
 
 
 space :: Builder

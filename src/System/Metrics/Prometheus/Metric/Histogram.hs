@@ -4,7 +4,6 @@ module System.Metrics.Prometheus.Metric.Histogram
        ( Histogram
        , HistogramSample (..)
        , UpperBound
-       , Count
        , new
        , put
        , sample
@@ -20,15 +19,14 @@ newtype Histogram = Histogram { unHistogram :: IORef HistogramSample }
 
 
 type UpperBound = Double -- Inclusive upper bounds
-type Count = Int
-type Buckets = Map UpperBound Count
+type Buckets = Map UpperBound Double
 
 
 data HistogramSample =
     HistogramSample
     { histBuckets :: Buckets
     , histSum     :: Double
-    , histCount   :: Count
+    , histCount   :: Int
     }
 
 

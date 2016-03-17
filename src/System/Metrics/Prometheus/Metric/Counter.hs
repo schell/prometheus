@@ -1,4 +1,11 @@
-module System.Metrics.Prometheus.Metric.Counter where
+module System.Metrics.Prometheus.Metric.Counter
+       ( Counter
+       , CounterSample (..)
+       , new
+       , add
+       , inc
+       , sample
+       ) where
 
 
 import           Data.Atomics.Counter (AtomicCounter, incrCounter_, newCounter,

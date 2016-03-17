@@ -1,6 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module System.Metrics.Prometheus.Encode.MetricId where
+module System.Metrics.Prometheus.Encode.MetricId
+       ( encodeHeader
+       , encodeMetricId
+       , encodeLabels
+       , encodeName
+       , newline
+       , space
+       ) where
 
 import           Data.ByteString.Builder            (Builder, byteString, char8)
 import           Data.List                          (intersperse)

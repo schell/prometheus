@@ -1,4 +1,14 @@
-module System.Metrics.Prometheus.Metric.Gauge where
+module System.Metrics.Prometheus.Metric.Gauge
+       ( Gauge
+       , GaugeSample (..)
+       , new
+       , add
+       , sub
+       , inc
+       , dec
+       , set
+       , sample
+       ) where
 
 import           Data.IORef (IORef, atomicModifyIORef', atomicWriteIORef,
                              newIORef, readIORef)

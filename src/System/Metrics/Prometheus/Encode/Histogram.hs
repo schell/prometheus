@@ -1,6 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module System.Metrics.Prometheus.Encode.Histogram where
+module System.Metrics.Prometheus.Encode.Histogram
+       ( encodeHistogram
+       ) where
 
 
 import           Data.ByteString.Builder                    (Builder, doubleDec,

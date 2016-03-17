@@ -1,7 +1,15 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE OverloadedStrings  #-}
 
-module System.Metrics.Prometheus.Registry where
+module System.Metrics.Prometheus.Registry
+       ( Registry
+       , RegistrySample (..)
+       , new
+       , registerCounter
+       , registerGauge
+       , registerHistogram
+       , sample
+       ) where
 
 import           Control.Exception                          (Exception, throw)
 import           Data.Map                                   (Map)
@@ -14,7 +22,8 @@ import           System.Metrics.Prometheus.Metric.Counter   (Counter)
 import qualified System.Metrics.Prometheus.Metric.Counter   as Counter
 import           System.Metrics.Prometheus.Metric.Gauge     (Gauge)
 import qualified System.Metrics.Prometheus.Metric.Gauge     as Gauge
-import           System.Metrics.Prometheus.Metric.Histogram (Histogram)
+import           System.Metrics.Prometheus.Metric.Histogram (Histogram,
+                                                             UpperBound)
 import qualified System.Metrics.Prometheus.Metric.Histogram as Histogram
 import           System.Metrics.Prometheus.MetricId         (Labels,
                                                              MetricId (MetricId),
@@ -49,7 +58,7 @@ registerGauge name labels registry = do
       collision k _ _ = throw (KeyError k)
 
 
-registerHistogram :: Name -> Labels -> [Histogram.UpperBound] -> Registry -> IO (Histogram, Registry)
+registerHistogram :: Name -> Labels -> [UpperBound] -> Registry -> IO (Histogram, Registry)
 registerHistogram name labels buckets registry = do
     histogram <- Histogram.new buckets
     return (histogram, Registry $ Map.insertWithKey collision mid (HistogramMetric histogram) (unRegistry registry))

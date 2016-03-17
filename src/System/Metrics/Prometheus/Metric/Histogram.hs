@@ -1,6 +1,14 @@
 {-# LANGUAGE TupleSections #-}
 
-module System.Metrics.Prometheus.Metric.Histogram where
+module System.Metrics.Prometheus.Metric.Histogram
+       ( Histogram
+       , HistogramSample (..)
+       , UpperBound
+       , Count
+       , new
+       , put
+       , sample
+       ) where
 
 
 import           Data.IORef (IORef, atomicModifyIORef', newIORef, readIORef)
@@ -26,17 +34,21 @@ data HistogramSample =
 
 new :: [UpperBound] -> IO Histogram
 new buckets = Histogram <$> newIORef empty
-  where empty = HistogramSample (Map.fromList $ map (, 0) (read "Infinity" : buckets)) 0.0 0
+  where
+    empty = HistogramSample (Map.fromList $ map (, 0) (read "Infinity" : buckets)) zeroSum zeroCount
+    zeroSum = 0.0
+    zeroCount = 0
 
 
 put :: Double -> Histogram -> IO ()
 put x ioref = atomicModifyIORef' (unHistogram ioref) update
-    where update histData = (hist' histData, ())
-          hist' histData =
-              histData { histBuckets = updateBuckets x $ histBuckets histData
-                       , histSum = histSum histData + x
-                       , histCount = histCount histData + 1
-                       }
+    where
+      update histData = (hist' histData, ())
+      hist' histData =
+          histData { histBuckets = updateBuckets x $ histBuckets histData
+                   , histSum = histSum histData + x
+                   , histCount = histCount histData + 1
+                   }
 
 
 updateBuckets :: Double -> Buckets -> Buckets

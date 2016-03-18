@@ -22,8 +22,6 @@ description:
   .
   [Usage Example]
   .
-  > {-# LANGUAGE OverloadedStrings #-}
-  >
   > module Example where
   >
   > import           System.Metrics.Prometheus.GlobalRegistry

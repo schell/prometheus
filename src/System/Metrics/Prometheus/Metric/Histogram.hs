@@ -6,7 +6,7 @@ module System.Metrics.Prometheus.Metric.Histogram
        , Buckets
        , UpperBound
        , new
-       , put
+       , observe
        , sample
        ) where
 
@@ -39,15 +39,15 @@ new buckets = Histogram <$> newIORef empty
     zeroCount = 0
 
 
-put :: Double -> Histogram -> IO ()
-put x ioref = atomicModifyIORef' (unHistogram ioref) update
-    where
-      update histData = (hist' histData, ())
-      hist' histData =
-          histData { histBuckets = updateBuckets x $ histBuckets histData
-                   , histSum = histSum histData + x
-                   , histCount = histCount histData + 1
-                   }
+observe :: Double -> Histogram -> IO ()
+observe x = flip atomicModifyIORef' update . unHistogram
+  where
+    update histData = (hist' histData, ())
+    hist' histData =
+        histData { histBuckets = updateBuckets x $ histBuckets histData
+                 , histSum = histSum histData + x
+                 , histCount = histCount histData + 1
+                 }
 
 
 updateBuckets :: Double -> Buckets -> Buckets

@@ -21,7 +21,8 @@ new = Counter <$> newCounter 0
 
 
 add :: Int -> Counter -> IO ()
-add by = incrCounter_ by . unCounter
+add by | by >= 0 = incrCounter_ by . unCounter
+       | otherwise = error "must be >= 0"
 
 
 inc :: Counter -> IO ()

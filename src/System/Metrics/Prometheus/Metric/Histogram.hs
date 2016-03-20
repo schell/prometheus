@@ -11,6 +11,7 @@ module System.Metrics.Prometheus.Metric.Histogram
        ) where
 
 
+import           Data.Bool  (bool)
 import           Data.IORef (IORef, atomicModifyIORef', newIORef, readIORef)
 import           Data.Map   (Map)
 import qualified Data.Map   as Map
@@ -52,9 +53,7 @@ observe x = flip atomicModifyIORef' update . unHistogram
 
 updateBuckets :: Double -> Buckets -> Buckets
 updateBuckets x = Map.mapWithKey updateBucket
-  where updateBucket key val
-            | x <= key  = val + 1
-            | otherwise = val
+  where updateBucket key val = bool val (val + 1) (x <= key)
 
 
 sample :: Histogram -> IO HistogramSample

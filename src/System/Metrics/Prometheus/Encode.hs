@@ -33,8 +33,8 @@ serializeMetrics = toLazyByteString . encodeMetrics
 
 
 encodeMetrics :: RegistrySample -> Builder
-encodeMetrics = mconcat . intersperse newline . map encodeMetricGroup . groupByName
-    . Map.toList . unRegistrySample
+encodeMetrics = (<> newline) . mconcat . intersperse newline . map encodeMetricGroup
+    . groupByName . Map.toList . unRegistrySample
   where groupByName = groupBy ((==) `on` (name . fst))
 
 

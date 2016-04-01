@@ -3,10 +3,9 @@
 module System.Metrics.Prometheus.Concurrent.RegistryT where
 
 import           Control.Monad.IO.Class                        (MonadIO, liftIO)
-import           Control.Monad.Reader.Class                    (MonadReader,
-                                                                ask)
 import           Control.Monad.Trans.Class                     (MonadTrans)
-import           Control.Monad.Trans.Reader                    (ReaderT (..))
+import           Control.Monad.Trans.Reader                    (ReaderT (..),
+                                                                ask)
 
 import           System.Metrics.Prometheus.Concurrent.Registry (Registry, new)
 import qualified System.Metrics.Prometheus.Concurrent.Registry as R
@@ -20,8 +19,7 @@ import           System.Metrics.Prometheus.Registry            (RegistrySample)
 
 newtype RegistryT m a =
     RegistryT { unRegistryT :: ReaderT Registry m a }
-    deriving ( Monad, MonadTrans, Applicative, Functor
-             , MonadReader Registry, MonadIO)
+    deriving (Monad, MonadTrans, Applicative, Functor, MonadIO)
 
 
 runRegistryT :: MonadIO m => RegistryT m a -> m a
@@ -29,16 +27,16 @@ runRegistryT registry = liftIO new >>= runReaderT (unRegistryT registry)
 
 
 registerCounter :: MonadIO m => Name -> Labels -> RegistryT m Counter
-registerCounter n l = ask >>= liftIO . R.registerCounter n l
+registerCounter n l = RegistryT ask >>= liftIO . R.registerCounter n l
 
 
 registerGauge :: MonadIO m => Name -> Labels -> RegistryT m Gauge
-registerGauge n l = ask >>= liftIO . R.registerGauge n l
+registerGauge n l = RegistryT ask >>= liftIO . R.registerGauge n l
 
 
 registerHistogram :: MonadIO m => Name -> Labels -> [Histogram.UpperBound] -> RegistryT m Histogram
-registerHistogram n l b = ask >>= liftIO . R.registerHistogram n l b
+registerHistogram n l b = RegistryT ask >>= liftIO . R.registerHistogram n l b
 
 
-sample :: MonadIO m => RegistryT m RegistrySample
-sample = ask >>= liftIO . R.sample
+sample :: Monad m => RegistryT m (IO RegistrySample)
+sample = R.sample <$> RegistryT ask

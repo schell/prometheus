@@ -48,6 +48,6 @@ testing or generating lists of `[IO a]` actions that can be
 - [ ] Implement GHC-specific metrics.
 - [ ] Implement [summary metric](https://github.com/prometheus/client_golang/blob/master/prometheus/summary.go).
 - [ ] Encode name and labels on register.
-- [ ] Implement ReaderT for GlobalRegistry.
-- [ ] Library documentation and example.
+- [x] Implement ReaderT for Concurrent Registry.
+- [x] Library documentation and example.
 - [ ] [Name and label validation](http://prometheus.io/docs/concepts/data_model/#metric-names-and-labels)

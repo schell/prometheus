@@ -2,7 +2,8 @@
 
 module System.Metrics.Prometheus.Concurrent.Http where
 
-import           Control.Monad.IO.Class                         (liftIO)
+import           Control.Monad.IO.Class                         (MonadIO,
+                                                                 liftIO)
 import           Data.Text                                      (Text)
 import           Network.HTTP.Types                             (hContentType,
                                                                  methodGet,
@@ -26,11 +27,11 @@ import           System.Metrics.Prometheus.Registry             (RegistrySample)
 type Path = [Text]
 
 
-serveHttpTextMetrics :: Port -> Path -> IO RegistrySample -> IO ()
-serveHttpTextMetrics port path = run port . app path
+serveHttpTextMetrics :: MonadIO m => Port -> Path -> IO RegistrySample -> m ()
+serveHttpTextMetrics port path = liftIO . run port . app path
 
 
-serveHttpTextMetricsT :: Port -> Path -> RegistryT IO ()
+serveHttpTextMetricsT :: MonadIO m => Port -> Path -> RegistryT m ()
 serveHttpTextMetricsT port path = liftIO . serveHttpTextMetrics port path =<< sample
 
 

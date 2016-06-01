@@ -1,6 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module System.Metrics.Prometheus.Concurrent.Http where
+module System.Metrics.Prometheus.Concurrent.Http
+       ( Path
+       , serveHttpTextMetrics
+       , serveHttpTextMetricsT
+       , prometheusApp
+       )
+       where
 
 import           Control.Monad.IO.Class                         (MonadIO,
                                                                  liftIO)
@@ -28,15 +34,15 @@ type Path = [Text]
 
 
 serveHttpTextMetrics :: MonadIO m => Port -> Path -> IO RegistrySample -> m ()
-serveHttpTextMetrics port path = liftIO . run port . app path
+serveHttpTextMetrics port path = liftIO . run port . prometheusApp path
 
 
 serveHttpTextMetricsT :: MonadIO m => Port -> Path -> RegistryT m ()
 serveHttpTextMetricsT port path = liftIO . serveHttpTextMetrics port path =<< sample
 
 
-app :: Path -> IO RegistrySample -> Application
-app path runSample request respond
+prometheusApp :: Path -> IO RegistrySample -> Application
+prometheusApp path runSample request respond
     | isPrometheusRequest path request = respond =<< prometheusResponse <$> runSample
     | otherwise = respond response404
   where

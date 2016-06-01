@@ -1,6 +1,5 @@
-resolver: lts-5.8
-packages:
-- '.'
-extra-deps: []
+resolver: nightly-2016-05-31
 flags: {}
-extra-package-dbs: []
+packages:
+  - location: '.'
+extra-deps: []

@@ -1,5 +1,5 @@
+{-# LANGUAGE CPP           #-}
 {-# LANGUAGE TupleSections #-}
-{-# LANGUAGE CPP #-}
 
 module System.Metrics.Prometheus.Metric.Histogram
        ( Histogram
@@ -12,12 +12,13 @@ module System.Metrics.Prometheus.Metric.Histogram
        ) where
 
 
-import           Data.Bool  (bool)
-import           Data.IORef (IORef, atomicModifyIORef', newIORef, readIORef)
-import           Data.Map   (Map)
-import qualified Data.Map   as Map
+import           Data.Bool           (bool)
+import           Data.IORef          (IORef, atomicModifyIORef', newIORef,
+                                      readIORef)
+import           Data.Map            (Map)
+import qualified Data.Map            as Map
 #if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>))
+import           Control.Applicative ((<$>))
 #endif
 
 

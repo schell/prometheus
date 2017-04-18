@@ -1,6 +1,6 @@
+{-# LANGUAGE CPP                #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE OverloadedStrings  #-}
-{-# LANGUAGE CPP                #-}
 
 module System.Metrics.Prometheus.Registry
        ( Registry
@@ -13,8 +13,8 @@ module System.Metrics.Prometheus.Registry
        ) where
 
 #if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>))
-import Data.Traversable (traverse)
+import           Control.Applicative                        ((<$>))
+import           Data.Traversable                           (traverse)
 #endif
 import           Control.Exception                          (Exception, throw)
 import           Data.Map                                   (Map)

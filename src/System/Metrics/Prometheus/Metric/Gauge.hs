@@ -1,4 +1,5 @@
 {-# LANGUAGE CPP #-}
+
 module System.Metrics.Prometheus.Metric.Gauge
        ( Gauge
        , GaugeSample (..)
@@ -11,10 +12,10 @@ module System.Metrics.Prometheus.Metric.Gauge
        , sample
        ) where
 
-import           Data.IORef (IORef, atomicModifyIORef', atomicWriteIORef,
-                             newIORef, readIORef)
+import           Data.IORef          (IORef, atomicModifyIORef',
+                                      atomicWriteIORef, newIORef, readIORef)
 #if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>))
+import           Control.Applicative ((<$>))
 #endif
 
 

@@ -1,4 +1,5 @@
-{-# LANGUAGE CPP                #-}
+{-# LANGUAGE CPP #-}
+
 module System.Metrics.Prometheus.Concurrent.Registry
        ( Registry
        , new
@@ -10,7 +11,7 @@ module System.Metrics.Prometheus.Concurrent.Registry
 
 
 #if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>))
+import           Control.Applicative                        ((<$>))
 #endif
 import           Control.Concurrent.MVar                    (MVar,
                                                              modifyMVarMasked,

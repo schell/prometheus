@@ -1,11 +1,12 @@
+{-# LANGUAGE CPP                        #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE CPP #-}
 
 module System.Metrics.Prometheus.Concurrent.RegistryT where
 
 #if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>), Applicative)
-import           Control.Monad.Trans.Reader (runReaderT)
+import           Control.Applicative                           (Applicative,
+                                                                (<$>))
+import           Control.Monad.Trans.Reader                    (runReaderT)
 #endif
 import           Control.Monad.IO.Class                        (MonadIO, liftIO)
 import           Control.Monad.Trans.Class                     (MonadTrans)

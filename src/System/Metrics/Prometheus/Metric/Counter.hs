@@ -1,4 +1,5 @@
 {-# LANGUAGE CPP #-}
+
 module System.Metrics.Prometheus.Metric.Counter
        ( Counter
        , CounterSample (..)
@@ -12,7 +13,7 @@ module System.Metrics.Prometheus.Metric.Counter
 import           Data.Atomics.Counter (AtomicCounter, incrCounter_, newCounter,
                                        readCounter)
 #if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>))
+import           Control.Applicative  ((<$>))
 #endif
 
 

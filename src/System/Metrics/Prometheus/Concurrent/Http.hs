@@ -1,5 +1,5 @@
+{-# LANGUAGE CPP               #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE CPP #-}
 
 module System.Metrics.Prometheus.Concurrent.Http
        ( Path
@@ -10,7 +10,7 @@ module System.Metrics.Prometheus.Concurrent.Http
        where
 
 #if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>))
+import           Control.Applicative                            ((<$>))
 #endif
 import           Control.Monad.IO.Class                         (MonadIO,
                                                                  liftIO)

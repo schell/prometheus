@@ -1,5 +1,7 @@
 resolver: lts-2.22
 
+flags: {}
+
 packages:
 - '.'
 
@@ -13,7 +15,3 @@ extra-deps:
   - psqueues-0.2.2.3
   - auto-update-0.1.3
   - mtl-2.2
-
-flags: {}
-
-extra-package-dbs: []

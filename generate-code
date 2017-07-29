@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+cd $(dirname $0)
+
+if ! type -P protoc &>/dev/null; then
+    echo "protoc must be installed" >&2
+    exit 1
+fi
+
+if ! type -P proto-lens-protoc &>/dev/null; then
+    echo "proto-lens-protoc must be installed" >&2
+    exit 1
+fi
+
+mkdir -p gen
+
+exec protoc --plugin=protoc-gen-haskell=$(type -P proto-lens-protoc) --haskell_out=gen proto/*.proto

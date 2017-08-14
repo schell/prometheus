@@ -59,6 +59,7 @@ library
   default-language:    Haskell2010
 
   exposed-modules: System.Metrics.Prometheus.Concurrent.Http
+                 , System.Metrics.Prometheus.Concurrent.Push
                  , System.Metrics.Prometheus.Concurrent.Registry
                  , System.Metrics.Prometheus.Concurrent.RegistryT
                  , System.Metrics.Prometheus.Encode
@@ -78,12 +79,16 @@ library
                , base              >= 4.7  && < 4.10
                , bytestring        >= 0.10 && < 0.11
                , containers        >= 0.5  && < 0.6
+               , http-client       >= 0.5.7 && < 0.6
                , http-types        >= 0.8  && < 0.10
+               , lens              >= 4.15.3 && < 4.16
+               , proto-lens        >= 0.2.2 && < 0.3
                , proto-lens-protoc >= 0.2.2 && < 0.3
                , text              >= 1.2  && < 1.3
                , transformers      >= 0.4  && < 0.6
                , wai               >= 3.2  && < 3.3
                , warp              >= 3.2  && < 3.3
+               , wreq              >= 0.5.0 && < 0.6
 
 source-repository head
   type:     git

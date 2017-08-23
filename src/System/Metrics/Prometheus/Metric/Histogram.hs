@@ -12,10 +12,11 @@ module System.Metrics.Prometheus.Metric.Histogram
        ) where
 
 
-import           Data.Bool  (bool)
-import           Data.IORef (IORef, atomicModifyIORef', newIORef, readIORef)
-import           Data.Map   (Map)
-import qualified Data.Map   as Map
+import           Control.Monad (void)
+import           Data.Bool     (bool)
+import           Data.IORef    (IORef, atomicModifyIORef', newIORef, readIORef)
+import           Data.Map      (Map)
+import qualified Data.Map      as Map
 
 
 newtype Histogram = Histogram { unHistogram :: IORef HistogramSample }
@@ -53,7 +54,7 @@ observeAndSample x = flip atomicModifyIORef' update . unHistogram
 
 
 observe :: Double -> Histogram -> IO ()
-observe x h = observeAndSample x h >> pure ()
+observe x = void . observeAndSample x
 
 
 updateBuckets :: Double -> Buckets -> Buckets

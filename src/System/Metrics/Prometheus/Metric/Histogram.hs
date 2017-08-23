@@ -8,6 +8,7 @@ module System.Metrics.Prometheus.Metric.Histogram
        , new
        , observe
        , sample
+       , observeAndSample
        ) where
 
 
@@ -40,15 +41,19 @@ new buckets = Histogram <$> newIORef empty
     zeroCount = 0
 
 
-observe :: Double -> Histogram -> IO ()
-observe x = flip atomicModifyIORef' update . unHistogram
+observeAndSample :: Double -> Histogram -> IO HistogramSample
+observeAndSample x = flip atomicModifyIORef' update . unHistogram
   where
-    update histData = (hist' histData, ())
+    update histData = (hist' histData, histData)
     hist' histData =
         histData { histBuckets = updateBuckets x $ histBuckets histData
                  , histSum = histSum histData + x
                  , histCount = histCount histData + 1
                  }
+
+
+observe :: Double -> Histogram -> IO ()
+observe x h = observeAndSample x h >> pure ()
 
 
 updateBuckets :: Double -> Buckets -> Buckets

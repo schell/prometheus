@@ -8,6 +8,7 @@ module System.Metrics.Prometheus.Metric.Gauge
        , dec
        , set
        , sample
+       , modifyAndSample
        ) where
 
 import           Data.IORef (IORef, atomicModifyIORef', atomicWriteIORef,
@@ -22,13 +23,17 @@ new :: IO Gauge
 new = Gauge <$> newIORef 0
 
 
+modifyAndSample :: (Double -> (Double, a)) -> Gauge -> IO a
+modifyAndSample f = flip atomicModifyIORef' f . unGauge
+
+
 add :: Double -> Gauge -> IO ()
-add x = flip atomicModifyIORef' f . unGauge
+add x = modifyAndSample f
   where f v = (v + x, ())
 
 
 sub :: Double -> Gauge -> IO ()
-sub x = flip atomicModifyIORef' f . unGauge
+sub x = modifyAndSample f
   where f v = (v - x, ())
 
 

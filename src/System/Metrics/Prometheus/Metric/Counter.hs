@@ -5,11 +5,11 @@ module System.Metrics.Prometheus.Metric.Counter
        , add
        , inc
        , sample
+       , addAndSample
        ) where
 
 
-import           Data.Atomics.Counter (AtomicCounter, incrCounter_, newCounter,
-                                       readCounter)
+import           Data.Atomics.Counter (AtomicCounter, incrCounter, newCounter)
 
 
 newtype Counter = Counter { unCounter :: AtomicCounter }
@@ -20,14 +20,16 @@ new :: IO Counter
 new = Counter <$> newCounter 0
 
 
-add :: Int -> Counter -> IO ()
-add by | by >= 0 = incrCounter_ by . unCounter
-       | otherwise = error "must be >= 0"
+addAndSample :: Int -> Counter -> IO CounterSample
+addAndSample by | by >= 0 = fmap CounterSample . incrCounter by . unCounter
+                | otherwise = error "must be >= 0"
 
+add :: Int -> Counter -> IO ()
+add by c = addAndSample by c >> pure ()
 
 inc :: Counter -> IO ()
 inc = add 1
 
 
 sample :: Counter -> IO CounterSample
-sample = fmap CounterSample . readCounter . unCounter
+sample = addAndSample 0

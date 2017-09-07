@@ -1,12 +1,12 @@
 name:                prometheus
-version:             0.4.1
+version:             0.4.2
 synopsis:            Prometheus Haskell Client
-homepage:            http://github.com/LukeHoersten/prometheus#readme
-bug-reports:         http://github.com/LukeHoersten/prometheus/issues
+homepage:            http://github.com/bitnomial/prometheus
+bug-reports:         http://github.com/bitnomial/prometheus/issues
 license:             BSD3
 license-file:        LICENSE
 author:              Luke Hoersten
-maintainer:          luke@hoersten.org, opensource@bitnomial.com
+maintainer:          luke@bitnomial.com, opensource@bitnomial.com
 copyright:           Bitnomial, Inc. (c) 2016
 category:            Metrics, Monitoring, Web, System
 build-type:          Simple
@@ -85,4 +85,4 @@ library
 
 source-repository head
   type:     git
-  location: https://github.com/LukeHoersten/prometheus
+  location: https://github.com/bitnomial/prometheus

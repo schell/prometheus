@@ -24,5 +24,5 @@ pushHttpProtoMetrics base job (Labels ls) frequency get =
     withSession $ \session -> forever $
       get >>= put session url >> threadDelay frequency
   where
-    url = base ++ "/metrics/job/" ++ (unpack job) ++
-      foldMapWithKey (\k v -> "/" ++ unpack k ++ "/" ++ unpack v) ls
+    url = base ++ "/metrics/job/" ++ unpack job ++
+        foldMapWithKey (\k v -> "/" ++ unpack k ++ "/" ++ unpack v) ls

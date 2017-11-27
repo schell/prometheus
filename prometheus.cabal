@@ -59,6 +59,8 @@ library
                 , src
   default-language:    Haskell2010
 
+  ghc-options: -Wall -fwarn-tabs -fno-warn-unused-do-bind
+
   exposed-modules: System.Metrics.Prometheus.Concurrent.Registry
                  , System.Metrics.Prometheus.Concurrent.RegistryT
                  , System.Metrics.Prometheus.Encode.ProtocolBuffers

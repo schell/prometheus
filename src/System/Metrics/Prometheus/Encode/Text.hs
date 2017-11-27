@@ -5,7 +5,6 @@ module System.Metrics.Prometheus.Encode.Text
        ) where
 
 import           Data.ByteString.Builder                         (Builder, toLazyByteString)
-import           Data.ByteString.Lazy                            (ByteString)
 import           Data.Function                                   (on)
 import           Data.List                                       (groupBy,
                                                                   intersperse)

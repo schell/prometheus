@@ -11,9 +11,6 @@ module System.Metrics.Prometheus.Registry
        ) where
 
 import           Control.Exception                          (Exception, throw)
-import           Control.Lens.Operators
-import           Data.ByteString.Lazy.Builder               (Builder,
-                                                             toLazyByteString)
 import           Data.Map                                   (Map)
 import qualified Data.Map                                   as Map
 import           Data.Typeable                              (Typeable)
@@ -27,7 +24,6 @@ import qualified System.Metrics.Prometheus.Metric.Gauge     as Gauge
 import           System.Metrics.Prometheus.Metric.Histogram (Histogram,
                                                              UpperBound)
 import qualified System.Metrics.Prometheus.Metric.Histogram as Histogram
-import qualified System.Metrics.Prometheus.Metric.Summary   as Summary
 import           System.Metrics.Prometheus.MetricId         (Labels (..),
                                                              MetricId (MetricId),
                                                              Name (..))

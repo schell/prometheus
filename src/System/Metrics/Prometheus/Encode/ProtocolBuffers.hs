@@ -5,15 +5,12 @@ module System.Metrics.Prometheus.Encode.ProtocolBuffers
   , metricsRequest
   ) where
 
-import           Control.Exception                          (Exception, throw)
 import           Control.Lens.Operators
 import           Data.ByteString.Lazy.Builder               (Builder,
                                                              toLazyByteString)
-import           Data.Map                                   (Map)
 import qualified Data.Map                                   as Map
 import           Data.ProtoLens                             (def)
 import           Data.ProtoLens.Encoding                    (buildMessage)
-import           Data.Typeable                              (Typeable)
 import           Network.HTTP.Client                        (Request,
                                                              RequestBody (..),
                                                              requestBody,
@@ -21,14 +18,9 @@ import           Network.HTTP.Client                        (Request,
 import           Network.Wreq.Types                         (Putable (..))
 import qualified Proto.Proto.Metrics                        as Proto
 
-import           System.Metrics.Prometheus.Metric           (Metric (..),
-                                                             MetricSample (..))
-import           System.Metrics.Prometheus.Metric.Counter   (Counter)
+import           System.Metrics.Prometheus.Metric           (MetricSample (..))
 import qualified System.Metrics.Prometheus.Metric.Counter   as Counter
-import           System.Metrics.Prometheus.Metric.Gauge     (Gauge)
 import qualified System.Metrics.Prometheus.Metric.Gauge     as Gauge
-import           System.Metrics.Prometheus.Metric.Histogram (Histogram,
-                                                             UpperBound)
 import qualified System.Metrics.Prometheus.Metric.Histogram as Histogram
 import qualified System.Metrics.Prometheus.Metric.Summary   as Summary
 import           System.Metrics.Prometheus.MetricId         (Labels (..),

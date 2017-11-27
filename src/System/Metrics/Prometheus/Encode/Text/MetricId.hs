@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module System.Metrics.Prometheus.Encode.MetricId
+module System.Metrics.Prometheus.Encode.Text.MetricId
        ( encodeHeader
        , encodeMetricId
        , encodeLabels

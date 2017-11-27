@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module System.Metrics.Prometheus.Concurrent.Http
+module System.Metrics.Prometheus.Http.Scrape
        ( Path
        , serveHttpTextMetrics
        , serveHttpTextMetricsT
@@ -26,7 +26,7 @@ import           Network.Wai.Handler.Warp                       (Port, run)
 
 import           System.Metrics.Prometheus.Concurrent.RegistryT (RegistryT,
                                                                  sample)
-import           System.Metrics.Prometheus.Encode               (encodeMetrics)
+import           System.Metrics.Prometheus.Encode.Text          (encodeMetrics)
 import           System.Metrics.Prometheus.Registry             (RegistrySample)
 
 

@@ -1,4 +1,4 @@
-resolver: lts-9.3
+resolver: nightly-2017-09-06
 flags: {}
 packages:
   - location: '.'

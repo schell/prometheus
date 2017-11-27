@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module System.Metrics.Prometheus.Encode.Histogram
+module System.Metrics.Prometheus.Encode.Text.Histogram
        ( encodeHistogram
        ) where
 
@@ -10,7 +10,7 @@ import           Data.List                                  (intersperse)
 import qualified Data.Map                                   as Map
 import           Data.Monoid                                ((<>))
 
-import           System.Metrics.Prometheus.Encode.MetricId  (encodeDouble,
+import           System.Metrics.Prometheus.Encode.Text.MetricId  (encodeDouble,
                                                              encodeInt,
                                                              encodeLabels,
                                                              encodeName,

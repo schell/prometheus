@@ -10,7 +10,7 @@ import           Data.ByteString.Lazy.Builder               (Builder,
                                                              toLazyByteString)
 import qualified Data.Map                                   as Map
 import           Data.ProtoLens                             (def)
-import           Data.ProtoLens.Encoding                    (buildMessage)
+import           Data.ProtoLens.Encoding                    (buildMessageDelimited)
 import           Network.HTTP.Client                        (Request,
                                                              RequestBody (..),
                                                              requestBody,
@@ -45,7 +45,7 @@ metricsRequest s req = req
 
 
 encodeMetrics :: RegistrySample -> Builder
-encodeMetrics = Map.foldMapWithKey ((buildMessage .) . encodeMetric) . unRegistrySample
+encodeMetrics = Map.foldMapWithKey ((buildMessageDelimited .) . encodeMetric) . unRegistrySample
 
 
 encodeMetric :: MetricId -> MetricSample -> Proto.MetricFamily

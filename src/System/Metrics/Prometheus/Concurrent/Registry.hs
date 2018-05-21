@@ -1,5 +1,5 @@
 module System.Metrics.Prometheus.Concurrent.Registry
-       ( Registry
+       ( Registry (..)
        , new
        , registerCounter
        , registerGauge

@@ -21,7 +21,7 @@ new = Counter <$> newCounter 0
 
 
 addAndSample :: Int -> Counter -> IO CounterSample
-addAndSample by | by >= 0 = fmap CounterSample . incrCounter by . unCounter
+addAndSample by | by >= 0   = fmap CounterSample . incrCounter by . unCounter
                 | otherwise = error "must be >= 0"
 
 

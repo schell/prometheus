@@ -24,8 +24,10 @@ addAndSample :: Int -> Counter -> IO CounterSample
 addAndSample by | by >= 0 = fmap CounterSample . incrCounter by . unCounter
                 | otherwise = error "must be >= 0"
 
+
 add :: Int -> Counter -> IO ()
 add by c = addAndSample by c >> pure ()
+
 
 inc :: Counter -> IO ()
 inc = add 1

@@ -1,18 +1,13 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module System.Metrics.Prometheus.Encode.Text
        ( encodeMetrics
        ) where
 
-import           Data.ByteString.Builder                         (Builder, toLazyByteString)
+import           Data.ByteString.Builder                         (Builder)
 import           Data.Function                                   (on)
 import           Data.List                                       (groupBy,
                                                                   intersperse)
 import qualified Data.Map                                        as Map
 import           Data.Monoid                                     ((<>))
-import           Network.HTTP.Client                             (Request, RequestBody (..),
-                                                                  requestBody,
-                                                                  requestHeaders)
 
 import           System.Metrics.Prometheus.Encode.Text.Histogram (encodeHistogram)
 import           System.Metrics.Prometheus.Encode.Text.MetricId  (encodeDouble,
@@ -27,14 +22,6 @@ import           System.Metrics.Prometheus.Metric.Counter        (CounterSample 
 import           System.Metrics.Prometheus.Metric.Gauge          (GaugeSample (..))
 import           System.Metrics.Prometheus.MetricId              (MetricId (..))
 import           System.Metrics.Prometheus.Registry              (RegistrySample (..))
-
-
-metricsRequest :: RegistrySample -> Request -> Request
-metricsRequest s req = req
-    { requestBody    = RequestBodyLBS . toLazyByteString $ encodeMetrics s
-    , requestHeaders = contentType : requestHeaders req
-    }
-  where contentType = ("Content-Type", "text/plain; version=0.0.4")
 
 
 encodeMetrics :: RegistrySample -> Builder

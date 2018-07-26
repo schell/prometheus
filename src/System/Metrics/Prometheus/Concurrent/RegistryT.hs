@@ -2,6 +2,7 @@
 
 module System.Metrics.Prometheus.Concurrent.RegistryT where
 
+import           Control.Applicative                           ((<$>))
 import           Control.Monad.IO.Class                        (MonadIO, liftIO)
 import           Control.Monad.Trans.Class                     (MonadTrans)
 import           Control.Monad.Trans.Reader                    (ReaderT (..),

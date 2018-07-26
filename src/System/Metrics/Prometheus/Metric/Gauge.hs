@@ -11,7 +11,8 @@ module System.Metrics.Prometheus.Metric.Gauge
        , modifyAndSample
        ) where
 
-import           Data.IORef (IORef, atomicModifyIORef', newIORef)
+import           Control.Applicative ((<$>))
+import           Data.IORef          (IORef, atomicModifyIORef', newIORef)
 
 
 newtype Gauge = Gauge { unGauge :: IORef Double }

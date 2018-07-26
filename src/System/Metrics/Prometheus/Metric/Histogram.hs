@@ -12,11 +12,13 @@ module System.Metrics.Prometheus.Metric.Histogram
        ) where
 
 
-import           Control.Monad (void)
-import           Data.Bool     (bool)
-import           Data.IORef    (IORef, atomicModifyIORef', newIORef, readIORef)
-import           Data.Map      (Map)
-import qualified Data.Map      as Map
+import           Control.Applicative ((<$>))
+import           Control.Monad       (void)
+import           Data.Bool           (bool)
+import           Data.IORef          (IORef, atomicModifyIORef', newIORef,
+                                      readIORef)
+import           Data.Map            (Map)
+import qualified Data.Map            as Map
 
 
 newtype Histogram = Histogram { unHistogram :: IORef HistogramSample }

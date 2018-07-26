@@ -1,5 +1,5 @@
 name:                prometheus
-version:             2.0.0
+version:             2.0.1
 synopsis:            Prometheus Haskell Client
 homepage:            http://github.com/bitnomial/prometheus
 bug-reports:         http://github.com/bitnomial/prometheus/issues

@@ -10,6 +10,7 @@ module System.Metrics.Prometheus.Registry
        , sample
        ) where
 
+import           Control.Applicative                        ((<$>))
 import           Control.Exception                          (Exception, throw)
 import           Data.Map                                   (Map)
 import qualified Data.Map                                   as Map

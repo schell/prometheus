@@ -3,7 +3,8 @@
 A simple and modern, type safe, idiomatic Haskell client for
 [Prometheus](http://prometheus.io) monitoring. Specifically there is
 no use of unsafe IO or manual ByteString construction from lists of
-bytes. Batteries-included web server.  .  [Usage Example]
+bytes. Batteries-included web server. Version 0.* supports Prometheus v1.0
+  and version 2.* supports Prometheus v2.0.
 
 - [Hackage Package](https://hackage.haskell.org/package/prometheus)
 - [Github](http://github.com/LukeHoersten/prometheus)

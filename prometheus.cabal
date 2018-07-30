@@ -1,5 +1,5 @@
 name:                prometheus
-version:             2.0.1
+version:             2.0.2
 synopsis:            Prometheus Haskell Client
 homepage:            http://github.com/bitnomial/prometheus
 bug-reports:         http://github.com/bitnomial/prometheus/issues
@@ -18,7 +18,8 @@ description:
   A simple and modern, type safe, idiomatic Haskell client for
   <http://prometheus.io Prometheus> monitoring. Specifically there is no
   use of unsafe IO or manual ByteString construction from lists of
-  bytes. Batteries-included web server.
+  bytes. Batteries-included web server. Version 0.* supports Prometheus v1.0
+  and version 2.* supports Prometheus v2.0.
   .
   [Usage Example]
   .

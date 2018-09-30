@@ -12,7 +12,7 @@ import           Control.Lens.Operators
 import           Data.ByteString.Lazy.Builder               (Builder,
                                                              toLazyByteString)
 import qualified Data.Map                                   as Map
-import           Data.ProtoLens                             (def)
+import           Data.ProtoLens.Default                     (def)
 import           Data.ProtoLens.Encoding                    (buildMessageDelimited)
 import           Lens.Labels.Unwrapped                      ()
 import           Network.HTTP.Client                        (Request,
@@ -20,7 +20,7 @@ import           Network.HTTP.Client                        (Request,
                                                              requestBody,
                                                              requestHeaders)
 import           Network.Wreq.Types                         (Putable (..))
-import           Proto.Proto.Metrics
+import           Proto.Metrics
 
 import           System.Metrics.Prometheus.Metric           (MetricSample (..))
 import qualified System.Metrics.Prometheus.Metric.Counter   as Counter

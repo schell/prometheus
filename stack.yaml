@@ -3,6 +3,8 @@ flags: {}
 packages:
 - location: '.'
 extra-deps:
-- proto-lens-0.3.1.0
-- proto-lens-protoc-0.3.1.0
-- lens-labels-0.2.0.1
+- lens-labels-0.3.0.0
+- proto-lens-0.4.0.0
+- proto-lens-protoc-0.4.0.0
+- proto-lens-runtime-0.4.0.1
+- proto-lens-setup-0.4.0.0

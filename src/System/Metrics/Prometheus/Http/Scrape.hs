@@ -31,6 +31,12 @@ import           System.Metrics.Prometheus.Encode.Text          (encodeMetrics)
 import           System.Metrics.Prometheus.Registry             (RegistrySample)
 
 
+-- | The HTTP web route on which to serve data
+--
+-- For example:
+--
+-- * @http://localhost:9090/metrics@ should use a path of @["metrics"]@.
+-- * @http://localhost/@ should use a path of @[]@.
 type Path = [Text]
 
 

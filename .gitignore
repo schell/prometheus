@@ -1,1 +1,9 @@
 gen/
+.ghci
+.ghcid
+.stack-work
+.DS_Store
+.#*
+*.pem
+*.cabal
+TAGS

@@ -9,8 +9,8 @@ author:              Luke Hoersten
 maintainer:          luke@bitnomial.com, opensource@bitnomial.com
 copyright:           Bitnomial, Inc. (c) 2016
 category:            Metrics, Monitoring, Web, System
-build-type:          Simple
-cabal-version:       >=1.10
+build-type:          Custom
+cabal-version:       >= 1.10
 
 description:
   [Prometheus Haskell Client]
@@ -53,10 +53,16 @@ description:
 
 extra-source-files: Example.hs
                   , README.md
+                  , proto/metrics.proto
+
+custom-setup
+  setup-depends:
+      base
+    , Cabal
+    , proto-lens-setup == 0.4.0.*
 
 library
-  hs-source-dirs: gen
-                , src
+  hs-source-dirs: src
   default-language:    Haskell2010
 
   ghc-options: -Wall -fwarn-tabs -fno-warn-unused-do-bind
@@ -78,7 +84,11 @@ library
                  , System.Metrics.Prometheus.Registry
                  , System.Metrics.Prometheus.RegistryT
 
-  other-modules: Proto.Proto.Metrics
+  other-modules:   Proto.Metrics
+                 , Proto.Metrics_Fields
+
+  autogen-modules: Proto.Metrics
+                 , Proto.Metrics_Fields
 
   build-depends: base              >= 4.7  && < 5
                , atomic-primops    >= 0.8  && < 0.9

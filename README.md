@@ -1,13 +1,18 @@
 # Prometheus Haskell Client
 
-A simple and modern, type safe, idiomatic Haskell client for
-[Prometheus](http://prometheus.io) monitoring. Specifically there is
+A simple and modern, type safe, performance focused, idiomatic Haskell client
+for [Prometheus](http://prometheus.io) monitoring. Specifically there is
 no use of unsafe IO or manual ByteString construction from lists of
-bytes. Batteries-included web server. Version 0.* supports Prometheus v1.0
-  and version 2.* supports Prometheus v2.0.
+bytes. Batteries-included web server.
+
+A key design element of this library is that the RegistryT monad transformer
+is only required for registering new time series. Once the time series is
+registered, new data samples may just be added in the IO monad.
+
+Note: Version 0.* supports Prometheus v1.0 and version 2.* supports Prometheus v2.0.
 
 - [Hackage Package](https://hackage.haskell.org/package/prometheus)
-- [Github](http://github.com/LukeHoersten/prometheus)
+- [Github](http://github.com/bitnomial/prometheus)
 
 ## Usage Example
 

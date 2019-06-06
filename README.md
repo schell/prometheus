@@ -17,7 +17,7 @@ bytes. Batteries-included web server. Version 0.* supports Prometheus v1.0
 module Example where
 
 import           Control.Monad.IO.Class                         (liftIO)
-import           System.Metrics.Prometheus.Concurrent.Http      (serveHttpTextMetricsT)
+import           System.Metrics.Prometheus.Http.Scrape          (serveHttpTextMetricsT)
 import           System.Metrics.Prometheus.Concurrent.RegistryT
 import           System.Metrics.Prometheus.Metric.Counter       (inc)
 import           System.Metrics.Prometheus.MetricId

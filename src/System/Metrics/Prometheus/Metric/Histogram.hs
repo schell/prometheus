@@ -17,8 +17,8 @@ import           Control.Monad       (void)
 import           Data.Bool           (bool)
 import           Data.IORef          (IORef, atomicModifyIORef', newIORef,
                                       readIORef)
-import           Data.Map            (Map)
-import qualified Data.Map            as Map
+import           Data.Map.Strict     (Map)
+import qualified Data.Map.Strict     as Map
 
 
 newtype Histogram = Histogram { unHistogram :: IORef HistogramSample }
@@ -30,9 +30,9 @@ type Buckets = Map UpperBound Double
 
 data HistogramSample =
     HistogramSample
-    { histBuckets :: Buckets
-    , histSum     :: Double
-    , histCount   :: Int
+    { histBuckets :: !Buckets
+    , histSum     :: !Double
+    , histCount   :: !Int
     }
 
 

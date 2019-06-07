@@ -1,5 +1,8 @@
 # Prometheus Haskell Client
 
+[![Build Status](https://travis-ci.com/bitnomial/prometheus.svg?branch=master)](https://travis-ci.com/bitnomial/prometheus)
+[![Hackage](https://img.shields.io/hackage/v/prometheus.svg)](https://hackage.haskell.org/package/prometheus)
+
 A simple and modern, type safe, performance focused, idiomatic Haskell client
 for [Prometheus](http://prometheus.io) monitoring. Specifically there is
 no use of unsafe IO or manual ByteString construction from lists of
@@ -12,7 +15,7 @@ registered, new data samples may just be added in the IO monad.
 Note: Version 0.* supports Prometheus v1.0 and version 2.* supports Prometheus v2.0.
 
 - [Hackage Package](https://hackage.haskell.org/package/prometheus)
-- [Github](http://github.com/bitnomial/prometheus)
+- [Github Repo](http://github.com/bitnomial/prometheus)
 
 ## Usage Example
 

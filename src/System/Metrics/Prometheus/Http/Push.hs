@@ -1,7 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module System.Metrics.Prometheus.Http.Push
-       ( pushHttpTextMetrics
+       ( pushMetrics
+       , parseURI
        )
        where
 
@@ -12,12 +13,14 @@ import           Data.Map                              (foldMapWithKey)
 import           Data.Text                             (Text, unpack)
 import           Network.HTTP.Client                   (Request (..),
                                                         RequestBody (..),
-                                                        defaultManagerSettings,
-                                                        httpNoBody, newManager,
+                                                        getUri,
+                                                        httpNoBody,
+                                                        parseRequest,
                                                         requestBody,
                                                         requestFromURI,
                                                         requestHeaders)
 import           Network.HTTP.Types                    (hContentType, methodPut)
+import           Network.HTTP.Client.TLS               (newTlsManager)
 import           Network.URI                           (URI (..), URIAuth,
                                                         nullURI)
 
@@ -25,28 +28,37 @@ import           System.Metrics.Prometheus.Encode.Text (encodeMetrics)
 import           System.Metrics.Prometheus.MetricId    (Labels (..))
 import           System.Metrics.Prometheus.Registry    (RegistrySample)
 
+-- | Parses a uri such that
+-- @
+--   parseURI "https://example.com"
+--      ===
+--   Just (URI "https:" "//example.com"
+-- @
+parseURI :: String -> Maybe URI
+parseURI = fmap getUri . parseRequest
 
--- | Push text metrics to a pushgateway.
-pushHttpTextMetrics :: URIAuth           -- ^ PushGateway URI name, including port number (ex: myGateway.com:8080)
-                    -> Text              -- ^ Job name
-                    -> Labels            -- ^ Label set to use as a grouping key for metrics
-                    -> Int               -- ^ Microsecond push frequency
-                    -> IO RegistrySample -- ^ Action to get latest metrics
-                    -> IO ()
-pushHttpTextMetrics gatewayName jobName labels frequencyMicros getSample = do
-    manager    <- newManager defaultManagerSettings
-    requestUri <- requestFromURI $ buildUri gatewayName jobName labels
+pushMetrics :: URI               -- ^ PushGateway URI name, including port number (ex: @parseUri https://myGateway.com:8080@)
+            -> Text              -- ^ Job name
+            -> Labels            -- ^ Label set to use as a grouping key for metrics
+            -> Int               -- ^ Microsecond push frequency
+            -> IO RegistrySample -- ^ Action to get latest metrics
+            -> IO ()
+pushMetrics gatewayURI jobName labels frequencyMicros getSample = do
+    manager    <- newTlsManager
+    gn         <- maybe (error "Invalid URI Authority") pure gatewayName
+    requestUri <- requestFromURI $ buildUri scheme gn jobName labels
     forever $ getSample >>= flip httpNoBody manager . request requestUri >> threadDelay frequencyMicros
   where
+    URI scheme gatewayName _ _ _ = gatewayURI
     request req sample = req
         { method         = methodPut
         , requestBody    = RequestBodyLBS . toLazyByteString $ encodeMetrics sample
         , requestHeaders = [(hContentType, "text/plain; version=0.0.4")]
         }
 
-buildUri :: URIAuth -> Text -> Labels -> URI
-buildUri gatewayName jobName (Labels ls) = nullURI
-    { uriScheme    = "http:"
+buildUri :: String -> URIAuth -> Text -> Labels -> URI
+buildUri scheme gatewayName jobName (Labels ls) = nullURI
+    { uriScheme    = scheme
     , uriAuthority = Just gatewayName
     , uriPath      = "/metrics/job/" ++ unpack jobName ++ foldMapWithKey labelPath ls
     }

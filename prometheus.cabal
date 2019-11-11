@@ -82,7 +82,7 @@ library
                  , System.Metrics.Prometheus.Registry
                  , System.Metrics.Prometheus.RegistryT
 
-  build-depends: base           >= 4.9  && < 4.13
+  build-depends: base           >= 4.9  && < 4.14
                , atomic-primops >= 0.8  && < 0.9
                , bytestring     >= 0.10 && < 0.11
                , containers     >= 0.5  && < 0.7

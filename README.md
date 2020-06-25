@@ -51,6 +51,16 @@ A `Registry` and `StateT`-based `RegistryT` are available for unit
 testing or generating lists of `[IO a]` actions that can be
 `sequenced` and returned from pure code to be applied.
 
+## Concurrency Model
+
+Metrics are "values" and the Registry is the map of "name_labels" to metric "keys".
+
+Metrics may be created/registered at any point, not just at start up, in the `RegistryT` monad transformer. Thread the `RegistryT` through your transformer stack to tell the type system you intend to register new metrics in that call stack. The `RegistryT` has a thread safe version in the `Concurrent` module.
+
+The metrics are thread safe on their own and do not require locking the entire registry to update them. They use high performance check-and-set atomic primitives. This is because metrics may be updated many times in between scrapes where the Reigstry needs to be lock. You do NOT want to lock all the metrics just to update one.
+
+The scraping operation of the server to collect all the metrics locks the registry to ensure no new metrics are being created/keyed in a race with the scrape.
+
 ## Tasks
 
 - [ ] Implement help docstrings.

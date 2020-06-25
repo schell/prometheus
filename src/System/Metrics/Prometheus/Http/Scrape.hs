@@ -2,8 +2,8 @@
 
 module System.Metrics.Prometheus.Http.Scrape
        ( Path
-       , serveHttpTextMetrics
-       , serveHttpTextMetricsT
+       , serveMetrics
+       , serveMetricsT
        , prometheusApp
        )
        where
@@ -40,12 +40,12 @@ import           System.Metrics.Prometheus.Registry             (RegistrySample)
 type Path = [Text]
 
 
-serveHttpTextMetrics :: MonadIO m => Port -> Path -> IO RegistrySample -> m ()
-serveHttpTextMetrics port path = liftIO . run port . prometheusApp path
+serveMetrics :: MonadIO m => Port -> Path -> IO RegistrySample -> m ()
+serveMetrics port path = liftIO . run port . prometheusApp path
 
 
-serveHttpTextMetricsT :: MonadIO m => Port -> Path -> RegistryT m ()
-serveHttpTextMetricsT port path = liftIO . serveHttpTextMetrics port path =<< sample
+serveMetricsT :: MonadIO m => Port -> Path -> RegistryT m ()
+serveMetricsT port path = liftIO . serveMetrics port path =<< sample
 
 
 prometheusApp :: Path -> IO RegistrySample -> Application

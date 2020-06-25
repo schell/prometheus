@@ -25,7 +25,7 @@ Note: Version 0.* supports Prometheus v1.0 and version 2.* supports Prometheus v
 module Example where
 
 import           Control.Monad.IO.Class                         (liftIO)
-import           System.Metrics.Prometheus.Http.Scrape          (serveHttpTextMetricsT)
+import           System.Metrics.Prometheus.Http.Scrape          (serveMetricsT)
 import           System.Metrics.Prometheus.Concurrent.RegistryT
 import           System.Metrics.Prometheus.Metric.Counter       (inc)
 import           System.Metrics.Prometheus.MetricId
@@ -42,7 +42,7 @@ main = runRegistryT $ do
 
     -- [...] pass metric handles to the rest of the app
 
-    serveHttpTextMetricsT 8080 ["metrics"] -- http://localhost:8080/metric server
+    serveMetricsT 8080 ["metrics"] -- http://localhost:8080/metric server
 ```
 
 ## Advanced Usage

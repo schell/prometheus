@@ -1,1 +1,9 @@
-gen/
+#*#
+.#*
+.DS_Store
+.cabal-sandbox/
+.hpc/
+.tix
+cabal.sandbox.config
+dist/
+**/.stack-work/
